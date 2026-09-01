@@ -1,34 +1,29 @@
 import pytest
-from main import Influencer, vanity_sort
-
-theprimeagen = Influencer(100, 1)
-pokimane = Influencer(800, 2)
-spambot = Influencer(0, 200)
-lane = Influencer(10, 2)
-badcop = Influencer(1, 2)
+from main import bubble_sort
 
 run_cases = [
-    pytest.param([badcop, lane], [badcop, lane]),
-    pytest.param([lane, badcop, pokimane], [badcop, lane, pokimane]),
-    pytest.param([spambot, theprimeagen], [theprimeagen, spambot]),
+    pytest.param([5, 7, 3, 6, 8], [3, 5, 6, 7, 8]),
+    pytest.param([2, 1], [1, 2]),
 ]
 
 submit_cases = [
     pytest.param([], [], marks=pytest.mark.submit),
-    pytest.param([lane], [lane], marks=pytest.mark.submit),
+    pytest.param([1], [1], marks=pytest.mark.submit),
+    pytest.param([1, 5, -3, 2, 4], [-3, 1, 2, 4, 5], marks=pytest.mark.submit),
     pytest.param(
-        [pokimane, theprimeagen, spambot, badcop, lane],
-        [badcop, lane, theprimeagen, pokimane, spambot],
+        [9, 8, 7, 6, 5, 4, 3, 2, 1],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
         marks=pytest.mark.submit,
     ),
+    pytest.param([1, 3, 2, 5, 4], [1, 2, 3, 4, 5], marks=pytest.mark.submit),
 ]
 
 
 @pytest.mark.parametrize(("input1", "expected_output"), run_cases + submit_cases)
-def test_vanity_sort(input1, expected_output):
+def test_bubble_sort(input1, expected_output):
     print("\n---------------------------------")
     print(f"Input:\n * {input1}")
     print(f"Expected: {expected_output}")
-    result = vanity_sort(input1)
+    result = bubble_sort(input1)
     print(f"Actual:   {result}")
     assert result == expected_output
