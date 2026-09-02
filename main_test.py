@@ -1,33 +1,37 @@
 import time
 
 import pytest
-from main import merge_sort
+from main import insertion_sort
 
 run_cases = [
-    pytest.param([3, 2, 1], [1, 2, 3]),
-    pytest.param([5, 4, 3, 2, 1], [1, 2, 3, 4, 5]),
+    pytest.param([4, 3, 2, 1], [1, 2, 3, 4]),
+    pytest.param([9, 5, -3, 7], [-3, 5, 7, 9]),
 ]
 
 submit_cases = [
     pytest.param([], [], marks=pytest.mark.submit),
-    pytest.param([7], [7], marks=pytest.mark.submit),
-    pytest.param([4, -7, 1, 0, 5], [-7, 0, 1, 4, 5], marks=pytest.mark.submit),
+    pytest.param([1], [1], marks=pytest.mark.submit),
+    pytest.param([5, 3, 4, 1, 2], [1, 2, 3, 4, 5], marks=pytest.mark.submit),
+    pytest.param(
+        [0, -2, -5, 3, 2, 1],
+        [-5, -2, 0, 1, 2, 3],
+        marks=pytest.mark.submit,
+    ),
     pytest.param(
         [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
         marks=pytest.mark.submit,
     ),
-    pytest.param([1, 1, 1, 1, 1], [1, 1, 1, 1, 1], marks=pytest.mark.submit),
 ]
 
 
 @pytest.mark.parametrize(("input1", "expected_output"), run_cases + submit_cases)
-def test_merge_sort(input1, expected_output):
+def test_insertion_sort(input1, expected_output):
     print("\n---------------------------------")
-    print(f"Input: {input1}")
+    print(f"Inputs: {input1}")
     print(f"Expected: {expected_output}")
     start = time.time()
-    result = merge_sort(input1)
+    result = insertion_sort(input1)
     elapsed = time.time() - start
     timeout = 1.00
     if elapsed < timeout:
