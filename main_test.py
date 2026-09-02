@@ -1,116 +1,86 @@
 import pytest
 
-from main import Stack
+from main import Queue
 
 run_cases = [
     (
-        [
-            ("push", {"name": "Alice", "role": "Developer"}),
-            ("push", {"name": "Bob", "role": "Designer"}),
-            ("size", None),
-            ("peek", None),
-            ("pop", None),
-            ("size", None),
-        ],
-        [
-            None,
-            None,
-            2,
-            {"name": "Bob", "role": "Designer"},
-            {"name": "Bob", "role": "Designer"},
-            1,
-        ],
+        [("push", "Rand"), ("push", "Mat"), ("peek", None), ("pop", None)],
+        ["Rand", "Rand"],
     ),
     (
         [
-            ("peek", None),
+            ("push", "Egwene"),
+            ("push", "Nynaeve"),
+            ("size", None),
+            ("pop", None),
+            ("size", None),
         ],
-        [
-            None,
-        ],
+        [2, "Egwene", 1],
     ),
     (
-        [
-            ("push", {"name": "Charlie", "company": "TechCorp"}),
-            ("push", {"name": "David", "skills": ["Python", "JavaScript"]}),
-            ("pop", None),
-            ("pop", None),
-            ("pop", None),
-        ],
-        [
-            None,
-            None,
-            {"name": "David", "skills": ["Python", "JavaScript"]},
-            {"name": "Charlie", "company": "TechCorp"},
-            None,
-        ],
+        [("push", "Aviendha"), ("pop", None), ("peek", None)],
+        ["Aviendha", None],
     ),
 ]
 
 submit_cases = [
     pytest.param(
+        [("pop", None), ("peek", None), ("size", None)],
+        [None, None, 0],
+        marks=pytest.mark.submit,
+    ),
+    pytest.param(
         [
-            ("push", {"name": "Eve", "role": "Manager", "years": 5}),
+            ("push", "Perrin"),
+            ("push", "Moiraine"),
+            ("push", "Lan"),
+            ("pop", None),
+            ("pop", None),
             ("peek", None),
-            ("push", {"name": "Frank", "role": "DevOps"}),
-            ("size", None),
-            ("pop", None),
-            ("pop", None),
-            ("pop", None),
         ],
-        [
-            None,
-            {"name": "Eve", "role": "Manager", "years": 5},
-            None,
-            2,
-            {"name": "Frank", "role": "DevOps"},
-            {"name": "Eve", "role": "Manager", "years": 5},
-            None,
-        ],
+        ["Perrin", "Moiraine", "Lan"],
+        marks=pytest.mark.submit,
+    ),
+    pytest.param(
+        [("push", "Thom"), ("pop", None), ("push", "Loial"), ("peek", None)],
+        ["Thom", "Loial"],
         marks=pytest.mark.submit,
     ),
 ]
 
 
-def visualize_stack(stack):
-    if not stack:
-        return "- (empty)"
-    return "\n".join(
-        [f"    - {item['name']}: {list(item.values())[1]}" for item in reversed(stack)]
-    )
+def visualize_queue(queue):
+    if not queue.items:
+        return "Queue is empty"
+    return "\n".join([f"- {item}" for item in reversed(queue.items)])
 
 
 @pytest.mark.parametrize(("operations", "expected_outputs"), run_cases + submit_cases)
-def test_stack(operations, expected_outputs):
+def test_queue(operations, expected_outputs):
     print("\n---------------------------------")
-    stack = Stack()
-    actual_outputs = []
+    queue = Queue()
+    outputs = []
+    for op, value in operations:
+        if op == "push":
+            queue.push(value)
+            print(f"Push: {value}")
+        elif op == "pop":
+            result = queue.pop()
+            outputs.append(result)
+            print(f"Pop: {result}")
+        elif op == "peek":
+            result = queue.peek()
+            outputs.append(result)
+            print(f"Peek: {result}")
+        elif op == "size":
+            result = queue.size()
+            outputs.append(result)
+            print(f"Size: {result}")
 
-    try:
-        for i, (op, value) in enumerate(operations):
-            print(f"Operation {i + 1}:")
-            if op == "push":
-                print(f"  Push: {value}")
-                actual_outputs.append(stack.push(value))
-            elif op == "pop":
-                result = stack.pop()
-                print(f"  Pop: {result}")
-                actual_outputs.append(result)
-            elif op == "peek":
-                result = stack.peek()
-                print(f"  Peek: {result}")
-                actual_outputs.append(result)
-            elif op == "size":
-                result = stack.size()
-                print(f"  Size: {result}")
-                actual_outputs.append(result)
+        print("\nQueue state:")
+        print(visualize_queue(queue))
+        print()
 
-            print(f"  Stack:\n{visualize_stack(stack.items)}")
-            print()
-    except Exception as error:
-        print(f"Error: {error}")
-        raise
-
-    print(f"Expected outputs: {expected_outputs}")
-    print(f"Actual outputs: {actual_outputs}")
-    assert actual_outputs == expected_outputs
+    print(f"Expected: {expected_outputs}")
+    print(f"Actual: {outputs}")
+    assert outputs == expected_outputs

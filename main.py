@@ -1,24 +1,22 @@
 from typing import Any
 
 
-class Stack:
+class Queue:
     def __init__(self) -> None:
         self.items: list[Any] = []
 
     def push(self, item: Any) -> None:
         self.items.append(item)
 
-    def size(self) -> int:
-        return len(self.items)
-
     def pop(self) -> Any:
-        if len(self.items) > 0:
-            return self.items.pop()
-        else:
+        if not self.items:
             return None
+        return self.items.pop(0)
 
     def peek(self) -> Any:
-        if len(self.items) > 0:
-            return self.items[len(self.items) - 1]
-        else:
+        if not self.items:
             return None
+        return self.items[0]
+
+    def size(self) -> int:
+        return len(self.items)
