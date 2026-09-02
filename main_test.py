@@ -1,47 +1,40 @@
-import time
-
 import pytest
-from main import quick_sort
+from main import selection_sort
 
 run_cases = [
-    pytest.param([2, 1, 3], 0, 2, [1, 2, 3]),
-    pytest.param([9, 6, 2, 1, 8, 7], 0, 5, [1, 2, 6, 7, 8, 9]),
-]
-
-submit_cases = [
-    pytest.param([], 0, -1, [], marks=pytest.mark.submit),
-    pytest.param([1], 0, 0, [1], marks=pytest.mark.submit),
-    pytest.param([1, 2, 3, 4, 5], 0, 4, [1, 2, 3, 4, 5], marks=pytest.mark.submit),
-    pytest.param([5, 4, 3, 2, 1], 0, 4, [1, 2, 3, 4, 5], marks=pytest.mark.submit),
+    pytest.param([5, 3, 8, 6, 1, 9], [1, 3, 5, 6, 8, 9]),
     pytest.param(
-        [0, 1, 6, 4, 7, 3, 2, 8, 5, -9],
-        0,
-        9,
-        [-9, 0, 1, 2, 3, 4, 5, 6, 7, 8],
-        marks=pytest.mark.submit,
+        [10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     ),
 ]
 
+submit_cases = [
+    pytest.param(
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        marks=pytest.mark.submit,
+    ),
+    pytest.param(
+        [15, 12, 8, 7, 5, 3, 1],
+        [1, 3, 5, 7, 8, 12, 15],
+        marks=pytest.mark.submit,
+    ),
+    pytest.param(
+        [10, 5, 3, 7, 2, 8, 1],
+        [1, 2, 3, 5, 7, 8, 10],
+        marks=pytest.mark.submit,
+    ),
+    pytest.param([], [], marks=pytest.mark.submit),
+    pytest.param([1], [1], marks=pytest.mark.submit),
+]
 
-@pytest.mark.parametrize(
-    ("input1", "input2", "input3", "expected_output"), run_cases + submit_cases
-)
-def test_quick_sort(input1, input2, input3, expected_output):
+
+@pytest.mark.parametrize(("input1", "expected_output"), run_cases + submit_cases)
+def test_selection_sort(input1, expected_output):
     print("\n---------------------------------")
-    print("Inputs:")
-    print(f" * nums: {input1}")
-    print(f" * low: {input2}")
-    print(f" * high: {input3}")
+    print(f"Inputs: {input1}")
     print(f"Expected: {expected_output}")
-    start = time.time()
-    result = input1.copy()
-    quick_sort(result, input2, input3)
-    elapsed = time.time() - start
-    timeout = 1.00
-    if elapsed < timeout:
-        print(f"test completed in less than {timeout * 1000} milliseconds!")
-    else:
-        print(f"test took longer than {timeout * 1000} milliseconds!")
-    print(f"Actual: {result}")
-    assert elapsed < timeout
+    result = selection_sort(input1)
+    print(f"Actual:   {result}")
     assert result == expected_output
