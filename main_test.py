@@ -1,86 +1,71 @@
 import pytest
 
-from main import Queue
+from main import Queue, matchmake
 
 run_cases = [
-    (
-        [("push", "Rand"), ("push", "Mat"), ("peek", None), ("pop", None)],
-        ["Rand", "Rand"],
-    ),
-    (
-        [
-            ("push", "Egwene"),
-            ("push", "Nynaeve"),
-            ("size", None),
-            ("pop", None),
-            ("size", None),
-        ],
-        [2, "Egwene", 1],
-    ),
-    (
-        [("push", "Aviendha"), ("pop", None), ("peek", None)],
-        ["Aviendha", None],
-    ),
+    [("Ted", "join"), (["Ted"], "No match found")],
+    [("Barney", "join"), (["Barney", "Ted"], "No match found")],
+    [("Marshall", "join"), (["Marshall", "Barney", "Ted"], "No match found")],
+    [("Lily", "join"), (["Lily", "Marshall"], "Ted matched Barney!")],
+    [("Robin", "join"), (["Robin", "Lily", "Marshall"], "No match found")],
+    [("Carl", "join"), (["Carl", "Robin"], "Marshall matched Lily!")],
+    [("Carl", "leave"), (["Robin"], "No match found")],
+    [("Robin", "leave"), ([], "No match found")],
 ]
 
 submit_cases = [
     pytest.param(
-        [("pop", None), ("peek", None), ("size", None)],
-        [None, None, 0],
+        ("Ranjit", "join"),
+        (["Ranjit"], "No match found"),
         marks=pytest.mark.submit,
     ),
     pytest.param(
-        [
-            ("push", "Perrin"),
-            ("push", "Moiraine"),
-            ("push", "Lan"),
-            ("pop", None),
-            ("pop", None),
-            ("peek", None),
-        ],
-        ["Perrin", "Moiraine", "Lan"],
+        ("Ranjit", "leave"),
+        ([], "No match found"),
         marks=pytest.mark.submit,
     ),
     pytest.param(
-        [("push", "Thom"), ("pop", None), ("push", "Loial"), ("peek", None)],
-        ["Thom", "Loial"],
+        ("Victoria", "join"),
+        (["Victoria"], "No match found"),
+        marks=pytest.mark.submit,
+    ),
+    pytest.param(
+        ("Quinn", "join"),
+        (["Quinn", "Victoria"], "No match found"),
+        marks=pytest.mark.submit,
+    ),
+    pytest.param(
+        ("Zoey", "join"),
+        (["Zoey", "Quinn", "Victoria"], "No match found"),
+        marks=pytest.mark.submit,
+    ),
+    pytest.param(
+        ("Stella", "join"),
+        (["Stella", "Zoey"], "Victoria matched Quinn!"),
         marks=pytest.mark.submit,
     ),
 ]
 
-
-def visualize_queue(queue):
-    if not queue.items:
-        return "Queue is empty"
-    return "\n".join([f"- {item}" for item in reversed(queue.items)])
+queue = Queue()
 
 
-@pytest.mark.parametrize(("operations", "expected_outputs"), run_cases + submit_cases)
-def test_queue(operations, expected_outputs):
+@pytest.mark.parametrize(("user", "expected_state"), run_cases + submit_cases)
+def test_matchmake(user, expected_state):
     print("\n---------------------------------")
-    queue = Queue()
-    outputs = []
-    for op, value in operations:
-        if op == "push":
-            queue.push(value)
-            print(f"Push: {value}")
-        elif op == "pop":
-            result = queue.pop()
-            outputs.append(result)
-            print(f"Pop: {result}")
-        elif op == "peek":
-            result = queue.peek()
-            outputs.append(result)
-            print(f"Peek: {result}")
-        elif op == "size":
-            result = queue.size()
-            outputs.append(result)
-            print(f"Size: {result}")
-
-        print("\nQueue state:")
-        print(visualize_queue(queue))
-        print()
-
-    print(f"Expected: {expected_outputs}")
-    print(f"Actual: {outputs}")
-    assert outputs == expected_outputs
+    print(f"Queue: {queue}")
+    name = user[0]
+    action = user[1]
+    if action == "leave":
+        print(f"{name} left the queue.")
+    if action == "join":
+        print(f"{name} joined the queue.")
+    print(f"Expecting Queue: {expected_state[0]}")
+    print(f"Expecting Return: {expected_state[1]}")
+    try:
+        result = matchmake(queue, user)
+    except Exception as error:
+        result = f"Error: {error}"
+    print(f"Actual Queue: {queue}")
+    print(f"Actual Return: {result}")
+    assert result == expected_state[1]
+    assert queue.items == expected_state[0]

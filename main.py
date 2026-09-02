@@ -1,22 +1,18 @@
-from typing import Any
+from queue import Queue
 
 
-class Queue:
-    def __init__(self) -> None:
-        self.items: list[Any] = []
+def matchmake(queue: Queue, user: tuple[str, str]) -> str:
+    name, action = user
 
-    def push(self, item: Any) -> None:
-        self.items.append(item)
+    if action == "leave" and name in queue.items:
+        queue.search_and_remove(name)
+    elif action == "join":
+        queue.push(name)
 
-    def pop(self) -> Any:
-        if not self.items:
-            return None
-        return self.items.pop(0)
-
-    def peek(self) -> Any:
-        if not self.items:
-            return None
-        return self.items[0]
-
-    def size(self) -> int:
-        return len(self.items)
+    if queue.size() == 4:
+        user1 = queue.pop()
+        user2 = queue.pop()
+        return f"{user1} matched {user2}!"
+    elif queue.size() < 4:
+        return "No match found"
+    
