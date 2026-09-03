@@ -2,13 +2,19 @@ import pytest
 from main import LinkedList, Node
 
 run_cases = [
-    pytest.param(["Major Marquis Warren", "John Ruth"]),
-    pytest.param(["Major Marquis Warren", "John Ruth", "Daisy Domergue"]),
+    pytest.param(
+        ["Major Marquis Warren", "John Ruth"], ["John Ruth", "Major Marquis Warren"]
+    ),
+    pytest.param(
+        ["Major Marquis Warren", "John Ruth", "Daisy Domergue"],
+        ["Daisy Domergue", "John Ruth", "Major Marquis Warren"],
+    ),
 ]
 
 submit_cases = [
     pytest.param(
         ["Major Marquis Warren", "John Ruth", "Daisy Domergue", "Chris Mannix"],
+        ["Chris Mannix", "Daisy Domergue", "John Ruth", "Major Marquis Warren"],
         marks=pytest.mark.submit,
     ),
     pytest.param(
@@ -19,6 +25,7 @@ submit_cases = [
             "Chris Mannix",
             "Bob",
         ],
+        ["Bob", "Chris Mannix", "Daisy Domergue", "John Ruth", "Major Marquis Warren"],
         marks=pytest.mark.submit,
     ),
     pytest.param(
@@ -30,21 +37,30 @@ submit_cases = [
             "Bob",
             "Oswaldo Mobray",
         ],
+        [
+            "Oswaldo Mobray",
+            "Bob",
+            "Chris Mannix",
+            "Daisy Domergue",
+            "John Ruth",
+            "Major Marquis Warren",
+        ],
         marks=pytest.mark.submit,
     ),
 ]
 
 
-@pytest.mark.parametrize("inputs", run_cases + submit_cases)
-def test_add_to_tail(inputs):
+@pytest.mark.parametrize(("inputs", "expected_state"), run_cases + submit_cases)
+def test_add_to_head(inputs, expected_state):
     print("\n---------------------------------")
     linked_list = LinkedList()
     for val in inputs:
-        linked_list.add_to_tail(Node(val))
-    actual = linked_list_to_list(linked_list)
-    print(f"Expected: {inputs}")
-    print(f"Actual  : {actual}")
-    assert actual == inputs
+        linked_list.add_to_head(Node(val))
+    result = linked_list_to_list(linked_list)
+    print(f"Input:  {inputs}")
+    print(f"Expect: {expected_state}")
+    print(f"Actual: {result}")
+    assert result == expected_state
 
 
 def linked_list_to_list(linked_list):
