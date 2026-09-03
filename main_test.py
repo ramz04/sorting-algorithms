@@ -1,36 +1,38 @@
 import pytest
-from main import Node
+from main import LinkedList, Node
 
 run_cases = [
-    pytest.param("Anton Chigurh", ["Llewelyn Moss", "Anton Chigurh"]),
-    pytest.param("Carson Wells", ["Llewelyn Moss", "Anton Chigurh", "Carson Wells"]),
+    pytest.param("John Ruth", ["Major Marquis Warren", "John Ruth"]),
     pytest.param(
-        "Ed Tom Bell",
-        ["Llewelyn Moss", "Anton Chigurh", "Carson Wells", "Ed Tom Bell"],
+        "Daisy Domergue", ["Major Marquis Warren", "John Ruth", "Daisy Domergue"]
+    ),
+    pytest.param(
+        "Chris Mannix",
+        ["Major Marquis Warren", "John Ruth", "Daisy Domergue", "Chris Mannix"],
     ),
 ]
 
 submit_cases = [
     pytest.param(
-        "Carla Jean Moss",
+        "Bob",
         [
-            "Llewelyn Moss",
-            "Anton Chigurh",
-            "Carson Wells",
-            "Ed Tom Bell",
-            "Carla Jean Moss",
+            "Major Marquis Warren",
+            "John Ruth",
+            "Daisy Domergue",
+            "Chris Mannix",
+            "Bob",
         ],
         marks=pytest.mark.submit,
     ),
     pytest.param(
-        "Wendell",
+        "Oswaldo Mobray",
         [
-            "Llewelyn Moss",
-            "Anton Chigurh",
-            "Carson Wells",
-            "Ed Tom Bell",
-            "Carla Jean Moss",
-            "Wendell",
+            "Major Marquis Warren",
+            "John Ruth",
+            "Daisy Domergue",
+            "Chris Mannix",
+            "Bob",
+            "Oswaldo Mobray",
         ],
         marks=pytest.mark.submit,
     ),
@@ -39,13 +41,15 @@ submit_cases = [
 
 @pytest.fixture(scope="module")
 def linked_list():
-    return Node("Llewelyn Moss")
+    linked_list = LinkedList()
+    linked_list.head = Node("Major Marquis Warren")
+    return linked_list
 
 
 @pytest.mark.parametrize(("input", "expected_state"), run_cases + submit_cases)
-def test_set_next(linked_list, input, expected_state):
+def test_iteration(linked_list, input, expected_state):
     print("\n---------------------------------")
-    print(f"Linked List: {linked_list_to_str(linked_list)}")
+    print(f"Linked List: {linked_list}")
     print(f"Set Next: {input}")
     print(f"Expected: {expected_state}")
     node = Node(input)
@@ -56,26 +60,15 @@ def test_set_next(linked_list, input, expected_state):
     assert result == expected_state
 
 
-def linked_list_to_list(node):
+def linked_list_to_list(linked_list):
     result = []
-    current = node
-    while current:
-        result.append(current.val)
-        current = current.next
+    for node in linked_list:
+        result.append(node.val)
     return result
 
 
-def get_last_node(node):
-    current = node
+def get_last_node(linked_list):
+    current = linked_list.head
     while hasattr(current, "next") and current.next:
         current = current.next
     return current
-
-
-def linked_list_to_str(node):
-    current = node
-    linked_list_str = ""
-    while current and hasattr(current, "val"):
-        linked_list_str += current.val + " -> "
-        current = current.next
-    return linked_list_str

@@ -1,19 +1,25 @@
-from typing import Any
+from node import Node
 
 
-class Node:
-    val: Any
-    next: Any
+class LinkedList:
+    head: Node | None
 
-    def __init__(self, val: Any) -> None:
-        self.val = val
-        self.next = None
-        
+    def __init__(self) -> None:
+        self.head = None
 
-    def set_next(self, node: "Node") -> None:
-        self.next = node
+    def __iter__(self):
+        node = self.head
+
+        while node is not None:
+            yield node
+            node = node.next
 
     # don't touch below this line
 
     def __repr__(self) -> str:
-        return self.val
+        nodes = []
+        current = self.head
+        while current and hasattr(current, "val"):
+            nodes.append(current.val)
+            current = current.next
+        return " -> ".join(nodes)
