@@ -1,7 +1,24 @@
 from node import Node
 
 
-class LinkedList:
+class LLQueue:
+
+    def remove_from_head(self) -> Node | None:
+        # Empty queue: nothing to remove.
+        if self.head is None:
+            return None
+
+        # Remember the node being removed.
+        removed_head = self.head
+        # The head is now the old head's successor (None if it was the last node).
+        self.head = removed_head.next
+        # If the queue is now empty, there is no tail anymore.
+        if self.head is None:
+            self.tail = None
+        # Detach the removed node so it isn't still linked into the queue.
+        removed_head.set_next(None)
+        return removed_head
+    
     def add_to_head(self, node: Node) -> None:
         # Empty list: the new node doubles as head and tail.
         if self.head is None:
@@ -20,6 +37,8 @@ class LinkedList:
             self.tail = node
             return
 
+        assert self.tail is not None
+
         # Link the current tail to the new node (O(1), no full-list walk).
         self.tail.set_next(node)
         # The new node is now the tail of the list.
@@ -30,7 +49,7 @@ class LinkedList:
     def __init__(self) -> None:
         # A brand-new list has no nodes yet.
         self.head: Node | None = None
-        self.tail = None
+        self.tail: Node | None = None
 
     def __iter__(self):
         # Start at the head, yield each node, then follow the next link
