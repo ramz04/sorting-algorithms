@@ -2,6 +2,13 @@ from node import Node
 
 
 class LinkedList:
+    def add_to_head(self, node: Node) -> None:
+        # Link the new node to the current head (None if list was empty).
+        node.next = self.head
+
+        # The new node is now the head of the list.
+        self.head = node
+    
     def add_to_tail(self, node: Node) -> None:
         # Empty list: the new node becomes the first element.
         if self.head is None:
