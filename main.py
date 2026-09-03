@@ -2,24 +2,29 @@ from node import Node
 
 
 class LinkedList:
-    head: Node | None
+    def add_to_tail(self, node: Node) -> None:
+        if self.head is None:
+            self.head = node
+            return
+
+        current = self.head
+        while current.next is not None:
+            current = current.next
+        current.next = node
+
+    # don't touch below this line
 
     def __init__(self) -> None:
-        self.head = None
+        self.head: Node | None = None
 
     def __iter__(self):
         node = self.head
-
         while node is not None:
             yield node
             node = node.next
 
-    # don't touch below this line
-
     def __repr__(self) -> str:
         nodes = []
-        current = self.head
-        while current and hasattr(current, "val"):
-            nodes.append(current.val)
-            current = current.next
+        for node in self:
+            nodes.append(node.val)
         return " -> ".join(nodes)

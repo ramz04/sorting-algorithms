@@ -2,19 +2,16 @@ import pytest
 from main import LinkedList, Node
 
 run_cases = [
-    pytest.param("John Ruth", ["Major Marquis Warren", "John Ruth"]),
-    pytest.param(
-        "Daisy Domergue", ["Major Marquis Warren", "John Ruth", "Daisy Domergue"]
-    ),
-    pytest.param(
-        "Chris Mannix",
-        ["Major Marquis Warren", "John Ruth", "Daisy Domergue", "Chris Mannix"],
-    ),
+    pytest.param(["Major Marquis Warren", "John Ruth"]),
+    pytest.param(["Major Marquis Warren", "John Ruth", "Daisy Domergue"]),
 ]
 
 submit_cases = [
     pytest.param(
-        "Bob",
+        ["Major Marquis Warren", "John Ruth", "Daisy Domergue", "Chris Mannix"],
+        marks=pytest.mark.submit,
+    ),
+    pytest.param(
         [
             "Major Marquis Warren",
             "John Ruth",
@@ -25,7 +22,6 @@ submit_cases = [
         marks=pytest.mark.submit,
     ),
     pytest.param(
-        "Oswaldo Mobray",
         [
             "Major Marquis Warren",
             "John Ruth",
@@ -39,36 +35,17 @@ submit_cases = [
 ]
 
 
-@pytest.fixture(scope="module")
-def linked_list():
-    linked_list = LinkedList()
-    linked_list.head = Node("Major Marquis Warren")
-    return linked_list
-
-
-@pytest.mark.parametrize(("input", "expected_state"), run_cases + submit_cases)
-def test_iteration(linked_list, input, expected_state):
+@pytest.mark.parametrize("inputs", run_cases + submit_cases)
+def test_add_to_tail(inputs):
     print("\n---------------------------------")
-    print(f"Linked List: {linked_list}")
-    print(f"Set Next: {input}")
-    print(f"Expected: {expected_state}")
-    node = Node(input)
-    last_node = get_last_node(linked_list)
-    last_node.set_next(node)
-    result = linked_list_to_list(linked_list)
-    print(f"Actual: {result}")
-    assert result == expected_state
+    linked_list = LinkedList()
+    for val in inputs:
+        linked_list.add_to_tail(Node(val))
+    actual = linked_list_to_list(linked_list)
+    print(f"Expected: {inputs}")
+    print(f"Actual  : {actual}")
+    assert actual == inputs
 
 
 def linked_list_to_list(linked_list):
-    result = []
-    for node in linked_list:
-        result.append(node.val)
-    return result
-
-
-def get_last_node(linked_list):
-    current = linked_list.head
-    while hasattr(current, "next") and current.next:
-        current = current.next
-    return current
+    return [node.val for node in linked_list]
