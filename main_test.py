@@ -1,41 +1,36 @@
 import pytest
 from main import BSTNode
-
-# ref module is hidden because it has the solution!
-from ref import ref_implementation, ref_inorder
 from user import get_users
 
 run_cases = [
-    pytest.param(3),
-    pytest.param(5),
+    pytest.param(5, "Blake#0", "Carrell#14"),
+    pytest.param(10, "Ricky#1", "Vennett#29"),
 ]
 
 submit_cases = [
-    pytest.param(10, marks=pytest.mark.submit),
+    pytest.param(15, "Shelley#2", "George#42", marks=pytest.mark.submit),
 ]
 
 
-@pytest.mark.parametrize("num_users", run_cases + submit_cases)
-def test_insert_nodes(num_users):
+@pytest.mark.parametrize(
+    ("num_users", "min_user", "max_user"), run_cases + submit_cases
+)
+def test_min_max(num_users, min_user, max_user):
     users = get_users(num_users)
-    expected_bst = BSTNode()
+    bst = BSTNode()
     for user in users:
-        ref_implementation(expected_bst, user)
+        bst.insert(user)
     print("\n=====================================")
-    print("Expecting Tree:")
+    print("Tree:")
     print("-------------------------------------")
-    print_tree(expected_bst)
+    print_tree(bst)
     print("-------------------------------------\n")
-    actual_bst = BSTNode()
-    for user in users:
-        print(f"Inserting {user} into tree...")
-        actual_bst.insert(user)
-    print("\n")
-    print("Actual Tree:")
-    print("-------------------------------------")
-    print_tree(actual_bst)
-    print("-------------------------------------")
-    assert ref_inorder(actual_bst, []) == ref_inorder(expected_bst, [])
+    print(f"Expected min: {min_user}, max: {max_user}")
+    actual_min = bst.get_min()
+    actual_max = bst.get_max()
+    print(f"Actual min: {actual_min.user_name}, max: {actual_max.user_name}")
+    assert actual_max.user_name == max_user
+    assert actual_min.user_name == min_user
 
 
 def print_tree(bst_node):
