@@ -8,6 +8,28 @@ class BSTNode:
         # The value this node holds (None marks an empty root).
         self.val = val
 
+    def get_min(self) -> Any:
+        # Empty tree: there is no minimum.
+        if self.val is None:
+            return None
+
+        # No left child: this node holds the smallest value.
+        if self.left is None:
+            return self.val
+        # Otherwise the minimum is in the left subtree.
+        return self.left.get_min()
+
+    def get_max(self) -> Any:
+        # Empty tree: there is no maximum.
+        if self.val is None:
+            return None
+
+        # No right child: this node holds the largest value.
+        if self.right is None:
+            return self.val
+        # Otherwise the maximum is in the right subtree.
+        return self.right.get_max()
+            
     def insert(self, val: Any) -> None:
         # Empty root: place the value here and stop.
         if self.val is None:
